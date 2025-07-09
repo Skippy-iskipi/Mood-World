@@ -6,6 +6,7 @@ interface EnhancedMusicSystemProps {
   musicEnabled: boolean
   moodId: string
   onPlaybackDenied?: () => void
+  paused?: boolean
 }
 
 const localAudioSources = {
@@ -19,7 +20,7 @@ const localAudioSources = {
   missing: "/audio/missingme.mp3",
 }
 
-export default function EnhancedMusicSystem({ musicEnabled, moodId, onPlaybackDenied }: EnhancedMusicSystemProps) {
+export default function EnhancedMusicSystem({ musicEnabled, moodId, onPlaybackDenied, paused }: EnhancedMusicSystemProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -29,6 +30,7 @@ export default function EnhancedMusicSystem({ musicEnabled, moodId, onPlaybackDe
       setIsPlaying(false)
       if (audioRef.current) {
         audioRef.current.pause()
+        audioRef.current.currentTime = 0
       }
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
@@ -51,6 +53,15 @@ export default function EnhancedMusicSystem({ musicEnabled, moodId, onPlaybackDe
         })
     }
   }, [musicEnabled, moodId])
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (paused && musicEnabled) {
+      audioRef.current.pause();
+    } else if (!paused && musicEnabled) {
+      audioRef.current.play();
+    }
+  }, [paused, musicEnabled]);
 
   return (
     <>

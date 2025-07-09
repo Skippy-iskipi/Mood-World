@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicManager from '../music-manager';
+import { useRef } from "react"
 
 interface SleeplessRoomProps {
   mood: any
   musicEnabled: boolean
   setMusicEnabled?: (enabled: boolean) => void
+  isPaused?: boolean
+  setIsPaused?: (paused: boolean) => void
 }
 
 const comfortMessages = [
@@ -30,28 +33,44 @@ const sleepMusicOptions = [
   "UfcAVejslrU", // Forest Sounds for Sleep
 ]
 
-export default function SleeplessRoom({ mood, musicEnabled, setMusicEnabled }: SleeplessRoomProps) {
+export default function SleeplessRoom({ mood, musicEnabled, setMusicEnabled, isPaused, setIsPaused }: SleeplessRoomProps) {
   const [currentMessage, setCurrentMessage] = useState("")
   const [showMusicNotes, setShowMusicNotes] = useState(false)
   const [currentMusicId, setCurrentMusicId] = useState("")
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
     const randomMessage = comfortMessages[Math.floor(Math.random() * comfortMessages.length)]
     setCurrentMessage(randomMessage)
-
     // Select random music when component loads
     const randomMusic = sleepMusicOptions[Math.floor(Math.random() * sleepMusicOptions.length)]
     setCurrentMusicId(randomMusic)
   }, [])
 
-  const toggleMusic = () => {
-    if (!musicEnabled) {
-      // Select new random music each time
-      const randomMusic = sleepMusicOptions[Math.floor(Math.random() * sleepMusicOptions.length)]
-      setCurrentMusicId(randomMusic)
+  useEffect(() => {
+    // Pause or play the global audio element if possible
+    if (audioRef.current) {
+      if (musicEnabled && !isPaused) {
+        audioRef.current.play()
+      } else if (musicEnabled && isPaused) {
+        audioRef.current.pause()
+      }
     }
-    if (setMusicEnabled) setMusicEnabled(!musicEnabled)
-    setShowMusicNotes(!musicEnabled)
+  }, [musicEnabled, isPaused])
+
+  const handlePlay = () => {
+    if (setIsPaused) setIsPaused(false)
+    if (setMusicEnabled) setMusicEnabled(true)
+    setShowMusicNotes(true)
+  }
+  const handlePause = () => {
+    if (setIsPaused) setIsPaused(true)
+    setShowMusicNotes(false)
+  }
+  const handleStop = () => {
+    if (setIsPaused) setIsPaused(false)
+    if (setMusicEnabled) setMusicEnabled(false)
+    setShowMusicNotes(false)
   }
 
   return (
@@ -223,24 +242,74 @@ export default function SleeplessRoom({ mood, musicEnabled, setMusicEnabled }: S
             <p className="text-gray-600 mb-6 text-sm sm:text-base">A calming moonlit sanctuary for restless nights</p>
 
             <div className="space-y-4">
-              <motion.button
-                onClick={toggleMusic}
-                className={`w-full cartoonish-button px-6 py-4 text-sm sm:text-base ${
-                  musicEnabled ? "magical-glow" : ""
-                }`}
-                style={{
-                  background: musicEnabled
-                    ? "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%)"
-                    : "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)",
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {musicEnabled ? "🔇 Stop Taylor Calming Song" : "🎵 Play Taylor Calming Song"}
-              </motion.button>
-
+              {/* Play/Pause/Stop Buttons */}
+              {(!musicEnabled || (!musicEnabled && !isPaused)) && (
+                <motion.button
+                  onClick={handlePlay}
+                  className="w-full cartoonish-button px-6 py-4 text-sm sm:text-base"
+                  style={{
+                    background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)",
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  🎵 Play Taylor Calming Song
+                </motion.button>
+              )}
+              {musicEnabled && !isPaused && (
+                <div className="flex gap-3">
+                  <motion.button
+                    onClick={handlePause}
+                    className="flex-1 cartoonish-button px-6 py-4 text-sm sm:text-base magical-glow"
+                    style={{
+                      background: "linear-gradient(135deg, #a855f7 0%, #c084fc 100%)",
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    ⏸️ Pause
+                  </motion.button>
+                  <motion.button
+                    onClick={handleStop}
+                    className="flex-1 cartoonish-button px-6 py-4 text-sm sm:text-base"
+                    style={{
+                      background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)",
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    🔇 Stop Taylor Calming Song
+                  </motion.button>
+                </div>
+              )}
+              {musicEnabled && isPaused && (
+                <div className="flex gap-3">
+                  <motion.button
+                    onClick={handlePlay}
+                    className="flex-1 cartoonish-button px-6 py-4 text-sm sm:text-base magical-glow"
+                    style={{
+                      background: "linear-gradient(135deg, #a855f7 0%, #c084fc 100%)",
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    ▶️ Play Again
+                  </motion.button>
+                  <motion.button
+                    onClick={handleStop}
+                    className="flex-1 cartoonish-button px-6 py-4 text-sm sm:text-base"
+                    style={{
+                      background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)",
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    🔇 Stop Taylor Calming Song
+                  </motion.button>
+                </div>
+              )}
               <AnimatePresence>
-                {musicEnabled && (
+                {musicEnabled && !isPaused && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -263,6 +332,32 @@ export default function SleeplessRoom({ mood, musicEnabled, setMusicEnabled }: S
                     </motion.div>
                     <p className="text-indigo-600 text-xs sm:text-sm italic">
                       Enjoy Taylor's soothing voice and gentle waves to help you rest
+                    </p>
+                  </motion.div>
+                )}
+                {musicEnabled && isPaused && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="bg-indigo-100 rounded-2xl p-4 sm:p-6 border-3 border-indigo-200"
+                  >
+                    <motion.div
+                      className="flex items-center justify-center space-x-2 mb-2"
+                      animate={{
+                        opacity: [0.8, 1, 0.8],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
+                    >
+                      <span className="text-indigo-600 text-lg">⏸️</span>
+                      <span className="text-indigo-700 font-medium text-sm sm:text-base">Taylor calming song paused</span>
+                      <span className="text-indigo-600 text-lg">🌊</span>
+                    </motion.div>
+                    <p className="text-indigo-600 text-xs sm:text-sm italic">
+                      Take a moment, then play again when you're ready
                     </p>
                   </motion.div>
                 )}

@@ -80,16 +80,19 @@ const moods: Mood[] = [
 export default function SheikhaMoodWorld() {
   const [mounted, setMounted] = useState(false)
   const [musicEnabled, setMusicEnabled] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null)
 
   useEffect(() => { setMounted(true) }, [])
 
   const handleMoodSelect = (mood: Mood) => {
     setSelectedMood(mood)
+    setIsPaused(false) // reset pause when changing mood
   }
 
   const handleBackToMoods = () => {
     setSelectedMood(null)
+    setIsPaused(false) // reset pause when leaving mood
   }
 
   const getCurrentMoodId = () => {
@@ -106,6 +109,7 @@ export default function SheikhaMoodWorld() {
         musicEnabled={musicEnabled}
         moodId={getCurrentMoodId()}
         onPlaybackDenied={() => setMusicEnabled(false)}
+        paused={selectedMood && selectedMood.id === 'sleepless' ? isPaused : false}
       />
       {/* Music Toggle */}
       <MusicToggle enabled={musicEnabled} onToggle={setMusicEnabled} />
@@ -126,6 +130,8 @@ export default function SheikhaMoodWorld() {
             onBack={handleBackToMoods}
             musicEnabled={musicEnabled}
             setMusicEnabled={setMusicEnabled}
+            isPaused={isPaused}
+            setIsPaused={setIsPaused}
           />
         )}
       </AnimatePresence>
