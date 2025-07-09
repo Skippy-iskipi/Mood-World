@@ -22,6 +22,7 @@ interface InteractiveMoodWorldProps {
   mood: Mood
   onBack: () => void
   musicEnabled: boolean
+  setMusicEnabled?: (enabled: boolean) => void
 }
 
 const roomComponents = {
@@ -34,7 +35,7 @@ const roomComponents = {
   missing: MissingRoom,
 }
 
-export default function InteractiveMoodWorld({ mood, onBack, musicEnabled }: InteractiveMoodWorldProps) {
+export default function InteractiveMoodWorld({ mood, onBack, musicEnabled, setMusicEnabled }: InteractiveMoodWorldProps) {
   const RoomComponent = roomComponents[mood.id as keyof typeof roomComponents]
 
   return (
@@ -59,7 +60,11 @@ export default function InteractiveMoodWorld({ mood, onBack, musicEnabled }: Int
       </motion.button>
 
       {/* Room Content */}
-      <RoomComponent mood={mood} musicEnabled={musicEnabled} />
+      {mood.id === 'sleepless' ? (
+        <SleeplessRoom mood={mood} musicEnabled={musicEnabled} setMusicEnabled={setMusicEnabled} />
+      ) : (
+        <RoomComponent mood={mood} musicEnabled={musicEnabled} />
+      )}
     </motion.div>
   )
 }

@@ -7,7 +7,6 @@ import InteractiveMoodWorld from "./components/interactive-mood-world"
 import FloatingElements from "./components/floating-elements"
 import MusicToggle from "./components/music-toggle"
 import DailyMessage from "./components/daily-message"
-import MusicActivation from "./components/music-activation"
 import EnhancedMusicSystem from "./components/enhanced-music-system"
 
 type Mood = {
@@ -80,29 +79,10 @@ const moods: Mood[] = [
 
 export default function SheikhaMoodWorld() {
   const [mounted, setMounted] = useState(false)
-  const [musicEnabled, setMusicEnabled] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('musicActivated') === 'true';
-    }
-    return false;
-  });
+  const [musicEnabled, setMusicEnabled] = useState(true);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null)
 
-  useEffect(() => {
-    setMounted(true)
-    // Auto-enable music for first-time users on mood selection page
-    if (selectedMood === null && typeof window !== 'undefined') {
-      const musicActivated = localStorage.getItem('musicActivated')
-      if (musicActivated === null) {
-        setMusicEnabled(true)
-        localStorage.setItem('musicActivated', 'true')
-      }
-    }
-  }, [selectedMood])
-
-  useEffect(() => {
-    localStorage.setItem('musicActivated', musicEnabled ? 'true' : 'false');
-  }, [musicEnabled]);
+  useEffect(() => { setMounted(true) }, [])
 
   const handleMoodSelect = (mood: Mood) => {
     setSelectedMood(mood)
@@ -121,10 +101,12 @@ export default function SheikhaMoodWorld() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 relative overflow-hidden">
       <FloatingElements />
-      {/* Music Activation Prompt */}
-      <MusicActivation onActivate={() => setMusicEnabled(true)} />
       {/* Enhanced Music System */}
-      <EnhancedMusicSystem musicEnabled={musicEnabled} moodId={getCurrentMoodId()} />
+      <EnhancedMusicSystem
+        musicEnabled={musicEnabled}
+        moodId={getCurrentMoodId()}
+        onPlaybackDenied={() => setMusicEnabled(false)}
+      />
       {/* Music Toggle */}
       <MusicToggle enabled={musicEnabled} onToggle={setMusicEnabled} />
       {/* Daily Message */}
@@ -143,6 +125,7 @@ export default function SheikhaMoodWorld() {
             mood={selectedMood}
             onBack={handleBackToMoods}
             musicEnabled={musicEnabled}
+            setMusicEnabled={setMusicEnabled}
           />
         )}
       </AnimatePresence>

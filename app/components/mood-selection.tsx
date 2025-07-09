@@ -196,7 +196,7 @@ export default function MoodSelection({ moods, onMoodSelect, musicEnabled }: Moo
           animate={{ opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
         >
-          Whatever you're feeling is completely valid, beautiful soul
+          Whatever you're feeling is completely valid, Babe
         </motion.p>
         <motion.div
           animate={{ scale: [1, 1.2, 1] }}

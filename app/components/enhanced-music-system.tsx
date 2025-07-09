@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 interface EnhancedMusicSystemProps {
   musicEnabled: boolean
   moodId: string
+  onPlaybackDenied?: () => void
 }
 
 const localAudioSources = {
@@ -14,11 +15,11 @@ const localAudioSources = {
   work: "/audio/work.mp3",
   overthinking: "/audio/overthink.mp3",
   mad: "/audio/mad.mp3",
-  sleepless: "/audio/sleeping.mp3",
+  sleepless: "/audio/taylor.mp3",
   missing: "/audio/missingme.mp3",
 }
 
-export default function EnhancedMusicSystem({ musicEnabled, moodId }: EnhancedMusicSystemProps) {
+export default function EnhancedMusicSystem({ musicEnabled, moodId, onPlaybackDenied }: EnhancedMusicSystemProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -42,7 +43,12 @@ export default function EnhancedMusicSystem({ musicEnabled, moodId }: EnhancedMu
       audio.src = audioUrl
       audio.volume = 0.3
       audio.loop = true
-      audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false))
+      audio.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          setIsPlaying(false)
+          if (onPlaybackDenied) onPlaybackDenied();
+        })
     }
   }, [musicEnabled, moodId])
 

@@ -7,6 +7,7 @@ import MusicManager from '../music-manager';
 interface SleeplessRoomProps {
   mood: any
   musicEnabled: boolean
+  setMusicEnabled?: (enabled: boolean) => void
 }
 
 const comfortMessages = [
@@ -29,8 +30,7 @@ const sleepMusicOptions = [
   "UfcAVejslrU", // Forest Sounds for Sleep
 ]
 
-export default function SleeplessRoom({ mood, musicEnabled }: SleeplessRoomProps) {
-  const [isPlayingMusic, setIsPlayingMusic] = useState(false)
+export default function SleeplessRoom({ mood, musicEnabled, setMusicEnabled }: SleeplessRoomProps) {
   const [currentMessage, setCurrentMessage] = useState("")
   const [showMusicNotes, setShowMusicNotes] = useState(false)
   const [currentMusicId, setCurrentMusicId] = useState("")
@@ -45,13 +45,13 @@ export default function SleeplessRoom({ mood, musicEnabled }: SleeplessRoomProps
   }, [])
 
   const toggleMusic = () => {
-    if (!isPlayingMusic) {
+    if (!musicEnabled) {
       // Select new random music each time
       const randomMusic = sleepMusicOptions[Math.floor(Math.random() * sleepMusicOptions.length)]
       setCurrentMusicId(randomMusic)
     }
-    setIsPlayingMusic(!isPlayingMusic)
-    setShowMusicNotes(!isPlayingMusic)
+    if (setMusicEnabled) setMusicEnabled(!musicEnabled)
+    setShowMusicNotes(!musicEnabled)
   }
 
   return (
@@ -219,28 +219,28 @@ export default function SleeplessRoom({ mood, musicEnabled }: SleeplessRoomProps
               🌌
             </motion.div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-4 gradient-text">Lunar Lullaby</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-4 gradient-text">Taylor's Calming Song</h1>
             <p className="text-gray-600 mb-6 text-sm sm:text-base">A calming moonlit sanctuary for restless nights</p>
 
             <div className="space-y-4">
               <motion.button
                 onClick={toggleMusic}
                 className={`w-full cartoonish-button px-6 py-4 text-sm sm:text-base ${
-                  isPlayingMusic ? "magical-glow" : ""
+                  musicEnabled ? "magical-glow" : ""
                 }`}
                 style={{
-                  background: isPlayingMusic
+                  background: musicEnabled
                     ? "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%)"
                     : "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)",
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {isPlayingMusic ? "🔇 Stop Lullaby" : "🎵 Play Calming Music"}
+                {musicEnabled ? "🔇 Stop Taylor Calming Song" : "🎵 Play Taylor Calming Song"}
               </motion.button>
 
               <AnimatePresence>
-                {isPlayingMusic && (
+                {musicEnabled && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -258,11 +258,11 @@ export default function SleeplessRoom({ mood, musicEnabled }: SleeplessRoomProps
                       }}
                     >
                       <span className="text-indigo-600 text-lg">🎵</span>
-                      <span className="text-indigo-700 font-medium text-sm sm:text-base">Soft lullaby playing...</span>
+                      <span className="text-indigo-700 font-medium text-sm sm:text-base">Taylor calming song playing...</span>
                       <span className="text-indigo-600 text-lg">🌊</span>
                     </motion.div>
                     <p className="text-indigo-600 text-xs sm:text-sm italic">
-                      Gentle waves and cosmic melodies to soothe your soul
+                      Enjoy Taylor's soothing voice and gentle waves to help you rest
                     </p>
                   </motion.div>
                 )}
