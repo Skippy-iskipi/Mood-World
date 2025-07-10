@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicManager from '../music-manager';
+import { supabase } from '../../../lib/supabaseClient'
 
 interface MadRoomProps {
   mood: any
@@ -52,8 +53,15 @@ export default function MadRoom({ mood, musicEnabled }: MadRoomProps) {
     }
   }, [showBurnAnimation, burningText])
 
-  const burnFrustration = () => {
+  const burnFrustration = async () => {
     if (frustration.trim()) {
+      // Save to Supabase
+      await supabase.from('user_messages').insert([
+        {
+          room: 'mad',
+          message: frustration,
+        }
+      ])
       // Get vent and fire positions
       const ventRect = ventRef.current?.getBoundingClientRect()
       const fireRect = fireRef.current?.getBoundingClientRect()

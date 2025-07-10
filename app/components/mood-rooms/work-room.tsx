@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicManager from '../music-manager';
+import { supabase } from '../../../lib/supabaseClient'
 
 interface WorkRoomProps {
   mood: any
@@ -96,8 +97,25 @@ export default function WorkRoom({ mood, musicEnabled }: WorkRoomProps) {
     }
   }
 
-  const handleReflectionSubmit = () => {
+  const handleReflectionSubmit = async () => {
     if (reflectionAnswers.proud.trim() || reflectionAnswers.letGo.trim()) {
+      // Save both answers to Supabase
+      if (reflectionAnswers.proud.trim()) {
+        await supabase.from('user_messages').insert([
+          {
+            room: 'work_proud',
+            message: reflectionAnswers.proud,
+          }
+        ])
+      }
+      if (reflectionAnswers.letGo.trim()) {
+        await supabase.from('user_messages').insert([
+          {
+            room: 'work_letgo',
+            message: reflectionAnswers.letGo,
+          }
+        ])
+      }
       setShowReflectionComplete(true)
       setTimeout(() => {
         setShowReflectionCard(false)

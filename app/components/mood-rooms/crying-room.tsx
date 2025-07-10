@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicManager from '../music-manager';
+import { supabase } from '../../../lib/supabaseClient'
 
 interface CryingRoomProps {
   mood: any
@@ -77,8 +78,15 @@ export default function CryingRoom({ mood, musicEnabled }: CryingRoomProps) {
     return available[Math.floor(Math.random() * available.length)]
   }
 
-  const submitJournalEntry = () => {
+  const submitJournalEntry = async () => {
     if (journalEntry.trim()) {
+      // Save to Supabase
+      await supabase.from('user_messages').insert([
+        {
+          room: 'crying',
+          message: journalEntry,
+        }
+      ])
       setShowFeatherAnimation(true)
 
       setTimeout(() => {

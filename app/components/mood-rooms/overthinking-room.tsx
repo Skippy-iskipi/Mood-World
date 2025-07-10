@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicManager from '../music-manager';
+import { supabase } from '../../../lib/supabaseClient'
 
 interface OverthinkingRoomProps {
   mood: any
@@ -105,8 +106,15 @@ export default function OverthinkingRoom({ mood, musicEnabled }: OverthinkingRoo
     return () => clearInterval(interval)
   }, [])
 
-  const releaseThought = () => {
+  const releaseThought = async () => {
     if (currentThought.trim()) {
+      // Save to Supabase
+      await supabase.from('user_messages').insert([
+        {
+          room: 'overthinking',
+          message: currentThought,
+        }
+      ])
       setShowLanternAnimation(true)
       setReleasedThoughts([...releasedThoughts, currentThought])
 

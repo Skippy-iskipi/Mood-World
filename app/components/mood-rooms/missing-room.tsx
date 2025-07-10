@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicManager from '../music-manager';
+import ChatComponent from '../ChatComponent'
 
 interface MissingRoomProps {
   mood: any
@@ -21,6 +22,7 @@ export default function MissingRoom({ mood, musicEnabled }: MissingRoomProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(0);
+  const [showChat, setShowChat] = useState(false)
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -199,6 +201,26 @@ export default function MissingRoom({ mood, musicEnabled }: MissingRoomProps) {
             ))}
           </AnimatePresence>
         </div>
+
+        <button
+          className="fixed bottom-8 right-8 z-50 bg-pink-500 text-white px-6 py-3 rounded-full shadow-lg font-bold"
+          onClick={() => setShowChat(true)}
+        >
+          💬 Message me here
+        </button>
+        {showChat && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl shadow-2xl p-0 max-w-md w-full relative
+              sm:p-4 sm:max-w-md sm:rounded-2xl
+              p-0 max-w-full h-full flex flex-col justify-center items-center"
+              style={{ minHeight: '100dvh' }}
+            >
+              <div className="w-full h-full flex flex-col justify-center items-center p-2 sm:p-0">
+                <ChatComponent role="user" onClose={() => setShowChat(false)} />
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </>
