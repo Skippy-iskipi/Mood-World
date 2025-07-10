@@ -72,7 +72,7 @@ const moods: Mood[] = [
     emoji: "💔",
     label: "Missing me",
     color: "bg-gradient-to-br from-pink-300 to-rose-300",
-    description: "Self-love feels distant",
+    description: "Kawawa naman ang bebe ko",
     illustration: "💌",
   },
 ]

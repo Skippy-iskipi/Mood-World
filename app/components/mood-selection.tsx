@@ -54,7 +54,7 @@ export default function MoodSelection({ moods, onMoodSelect, musicEnabled }: Moo
           animate={{ scale: 1 }}
           transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
         >
-          Hi Sheikha
+          Hellooo, Babe
           <motion.span
             animate={{ rotate: [0, 20, 0] }}
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: 1 }}

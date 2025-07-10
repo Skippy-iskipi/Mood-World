@@ -130,75 +130,75 @@ const moodScenes = {
 const animations = {
   sway: {
     x: [0, 10, 0, -10, 0],
-    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   float: {
     y: [0, -20, 0],
-    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   gentle: {
     scale: [1, 1.1, 1],
-    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   fall: {
     y: [0, 100],
     opacity: [1, 0],
-    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeIn" },
+    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   glow: {
     opacity: [0.5, 1, 0.5],
     scale: [1, 1.2, 1],
-    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   twinkle: {
     opacity: [0.3, 1, 0.3],
     scale: [0.8, 1.2, 0.8],
-    transition: { duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   drift: {
     x: [0, 50, 0],
-    transition: { duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 8, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   sparkle: {
     rotate: [0, 180, 360],
     scale: [0.8, 1.2, 0.8],
-    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   steam: {
     y: [0, -30],
     opacity: [1, 0],
-    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeOut" },
+    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: [0, 0, 0.58, 1] },
   },
   flicker: {
     opacity: [0.8, 1, 0.9, 1],
-    transition: { duration: 0.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 0.5, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   flutter: {
     x: [0, 20, -10, 15, 0],
     y: [0, -15, 10, -5, 0],
-    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   bloom: {
     scale: [0.8, 1.3, 1],
-    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   crawl: {
     x: [0, 100, 0],
-    transition: { duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 6, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   pulse: {
     scale: [1, 1.4, 1],
     opacity: [0.7, 1, 0.7],
-    transition: { duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 1, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   spiral: {
     rotate: [0, 360],
     scale: [1, 1.2, 1],
-    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
   wave: {
     scaleX: [1, 1.2, 1],
-    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: [0.42, 0, 0.58, 1] },
   },
 }
 
@@ -226,30 +226,37 @@ export default function MoodWorld({ mood, onBack }: MoodWorldProps) {
 
       {/* Animated Scene Elements */}
       <div className="absolute inset-0">
-        {scene.elements.map((element, index) => (
-          <motion.div
-            key={index}
-            className="absolute text-6xl"
-            style={{
-              left: `${20 + index * 20}%`,
-              top: `${30 + (index % 2) * 20}%`,
-            }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              ...animations[element.animation as keyof typeof animations],
-            }}
-            transition={{
-              delay: element.delay,
-              type: "spring",
-              stiffness: 200,
-              damping: 20,
-            }}
-          >
-            {element.icon}
-          </motion.div>
-        ))}
+        {scene.elements.map((element, index) => {
+          const anim = animations[element.animation as keyof typeof animations];
+          const { transition, ...animProps } = anim;
+          const { ease, ...restTransition } = transition || {};
+
+          return (
+            <motion.div
+              key={index}
+              className="absolute text-6xl"
+              style={{
+                left: `${20 + index * 20}%`,
+                top: `${30 + (index % 2) * 20}%`,
+              }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                ...animProps,
+              }}
+              transition={{
+                ...restTransition,
+                delay: element.delay,
+                type: "spring",
+                stiffness: 200,
+                damping: 20,
+              }}
+            >
+              {element.icon}
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Content */}

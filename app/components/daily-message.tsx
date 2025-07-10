@@ -5,13 +5,13 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Heart, X } from "lucide-react"
 
 const dailyMessages = [
-  "Good morning, beautiful soul! Today is a new canvas for your amazing story. 🌸",
+  "Good morning, Babe! Have a great day! 🌸",
   "Remember: You don't have to be perfect to be worthy of love. You already are. 💕",
   "Your feelings are valid, your dreams matter, and you belong exactly where you are. ✨",
-  "Take a deep breath, Sheikha. You're doing better than you think you are. 🌿",
+  "Take a deep breath, Babe. You're doing better than you think you are. 🌿",
   "You bring light into this world just by existing. Thank you for being you. 🌟",
   "It's okay to rest. It's okay to feel. It's okay to be exactly where you are today. 🤗",
-  "Your heart is so beautiful. The way you care for others shows your incredible soul. 💖",
+  "You have the kind of heart that makes people feel safe and seen. It's one of the things I love most about you. 💖",
 ]
 
 export default function DailyMessage() {
