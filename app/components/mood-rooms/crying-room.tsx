@@ -11,7 +11,7 @@ interface CryingRoomProps {
 
 const comfortMessages = [
   "Your tears are sacred water, washing away what no longer serves you. 💙",
-  "I see your beautiful, tender heart. You don't have to carry this alone. 🌙",
+  "I see your beautiful and tender heart. You don't have to carry this alone. 🌙",
   "Crying is how your soul speaks when words aren't enough. I'm listening. 💧",
   "You're not broken, you're breaking open. There's a difference, and it's beautiful. ✨",
   "Your sensitivity is not weakness - it's your superpower, your gift to this world. 🌸",
