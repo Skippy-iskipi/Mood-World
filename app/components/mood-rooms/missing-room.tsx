@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicManager from '../music-manager';
 
@@ -10,117 +10,70 @@ interface MissingRoomProps {
 }
 
 const comfortMessages = [
-  "Even when I'm not beside you... I'm with you. 💫",
-  "You carry my love in your heart wherever you go. Feel it now. 💖",
-  "Missing someone means they mattered. That's beautiful, not painful. 🌸",
-  "Love doesn't end when distance begins. It just gets stronger. ✨",
-  "I'm always just a thought away. Think of me and feel me near. 🌙",
-  "Our bond is written in the stars - eternal and unbreakable. ⭐",
+  "I miss you too, my love. Every moment without you feels incomplete. 💔",
+  "Distance can't diminish what we share. You're always in my heart. 💖",
+  "I'm thinking of you right now, wishing I could hold you close.",
+  "Even miles away, my love reaches you. You're never truly alone.",
+  "I can't wait to be with you again. You're my everything. 💕",
 ]
 
 export default function MissingRoom({ mood, musicEnabled }: MissingRoomProps) {
-  const [showHeartAnimation, setShowHeartAnimation] = useState(false)
-  const [currentMessage, setCurrentMessage] = useState("")
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState(0);
+
+  const handlePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+    }
+  };
 
   useEffect(() => {
-    const randomMessage = comfortMessages[Math.floor(Math.random() * comfortMessages.length)]
-    setCurrentMessage(randomMessage)
-  }, [])
-
-  const feelClose = () => {
-    setShowHeartAnimation(true)
-    setTimeout(() => setShowHeartAnimation(false), 4000)
-  }
+    const interval = setInterval(() => {
+      setCurrentMessage((prev) => (prev + 1) % comfortMessages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-indigo-400 via-purple-400 to-pink-400 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-b from-pink-100 via-rose-200 to-purple-200 relative overflow-hidden">
 
-        {/* Message Galaxy Background */}
+        {/* Floating Hearts Background */}
         <div className="absolute inset-0">
-          {/* Cosmic Floating Effect */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-            animate={{
-              x: ["-100%", "100%"],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "linear",
-            }}
-          />
-
-          {/* Background Stars */}
-          {[...Array(60)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <motion.div
-              key={`bg-star-${i}`}
-              className="absolute text-white"
+              key={i}
+              className="absolute text-pink-300 text-4xl"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                fontSize: `${0.3 + Math.random() * 1}rem`,
-              }}
-              animate={{
-                opacity: [0.2, 1, 0.2],
-                scale: [0.5, 1.2, 0.5],
-              }}
-              transition={{
-                duration: 3 + Math.random() * 4,
-                repeat: Number.POSITIVE_INFINITY,
-                delay: Math.random() * 5,
-              }}
-            >
-              ⭐
-            </motion.div>
-          ))}
-
-          {/* Nebula Effects */}
-          {[...Array(4)].map((_, i) => (
-            <motion.div
-              key={`nebula-${i}`}
-              className="absolute w-32 h-32 sm:w-40 sm:h-40 rounded-full opacity-20"
-              style={{
-                left: `${Math.random() * 80}%`,
-                top: `${Math.random() * 80}%`,
-                background: `radial-gradient(circle, rgba(${Math.random() > 0.5 ? "255,192,203" : "147,51,234"}, 0.3) 0%, transparent 70%)`,
-              }}
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.1, 0.3, 0.1],
-              }}
-              transition={{
-                duration: 8 + i * 2,
-                repeat: Number.POSITIVE_INFINITY,
-                delay: i * 3,
-              }}
-            />
-          ))}
-
-          {/* Floating Memory Stars */}
-          {[...Array(12)].map((_, i) => (
-            <motion.div
-              key={`memory-star-${i}`}
-              className="absolute text-2xl"
-              style={{
-                left: `${20 + Math.random() * 60}%`,
-                top: `${20 + Math.random() * 60}%`,
               }}
               animate={{
                 y: [0, -20, 0],
-                opacity: [0.6, 1, 0.6],
-                scale: [1, 1.2, 1],
-                rotate: [0, 180, 360],
+                opacity: [0.3, 0.8, 0.3],
+                scale: [0.8, 1.2, 0.8],
               }}
               transition={{
-                duration: 6 + Math.random() * 4,
+                duration: 4 + Math.random() * 2,
                 repeat: Number.POSITIVE_INFINITY,
-                delay: i * 1.5,
+                delay: Math.random() * 2,
               }}
             >
-              {i % 4 === 0 ? "💫" : i % 4 === 1 ? "⭐" : i % 4 === 2 ? "✨" : "🌟"}
+              💕
             </motion.div>
           ))}
+          
+          {/* Soft Glow Overlay */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-pink-200/30 to-purple-200/30"
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY }}
+          />
         </div>
 
         {/* Main Content */}
@@ -130,38 +83,39 @@ export default function MissingRoom({ mood, musicEnabled }: MissingRoomProps) {
             animate={{ y: 0, opacity: 1 }}
             className="girly-card p-6 sm:p-8 max-w-lg w-full text-center"
           >
+            {/* Pulsing Heart */}
             <motion.div
               animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 10, -10, 0],
+                scale: [1, 1.3, 1],
+                opacity: [0.7, 1, 0.7],
               }}
               transition={{
-                duration: 3,
+                duration: 2,
                 repeat: Number.POSITIVE_INFINITY,
               }}
-              className="text-5xl sm:text-6xl mb-4"
+              className="text-8xl sm:text-9xl mb-6 text-red-400 drop-shadow-lg"
             >
-              💫
+              💔
             </motion.div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-purple-700 mb-4 gradient-text">Message Galaxy</h1>
-            <p className="text-gray-600 mb-6 text-sm sm:text-base">Floating among memories shaped like stars</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-rose-700 mb-4 gradient-text">Miss me?</h1>
+            <p className="text-gray-700 mb-6 text-sm sm:text-base">Hear my voice and feel my love, even when we're apart.</p>
 
-            <div className="space-y-4">
-              {/* Feel Close Button */}
+            <div className="space-y-6">
+              {/* Voice Message Button */}
               <motion.button
-                onClick={feelClose}
-                className="w-full cartoonish-button px-6 py-4 text-sm sm:text-base magical-glow"
+                onClick={handlePlay}
+                className="w-full cartoonish-button px-8 py-6 text-lg sm:text-xl magical-glow relative overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%)",
+                  background: "linear-gradient(135deg, #ec4899 0%, #be185d 50%, #a855f7 100%)",
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 animate={{
                   boxShadow: [
-                    "0 0 20px rgba(236, 72, 153, 0.3)",
-                    "0 0 40px rgba(236, 72, 153, 0.6)",
-                    "0 0 20px rgba(236, 72, 153, 0.3)",
+                    "0 0 20px rgba(236, 72, 153, 0.4)",
+                    "0 0 40px rgba(236, 72, 153, 0.8)",
+                    "0 0 20px rgba(236, 72, 153, 0.4)",
                   ],
                 }}
                 transition={{
@@ -169,104 +123,80 @@ export default function MissingRoom({ mood, musicEnabled }: MissingRoomProps) {
                   repeat: Number.POSITIVE_INFINITY,
                 }}
               >
-                💖 Click here to feel close
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-2xl">🎵</span>
+                  <span>{isPlaying ? "Pause My Voice" : "Hear My Voice"}</span>
+                  <span className="text-2xl">💕</span>
+                </div>
               </motion.button>
 
-              <div className="text-xs sm:text-sm text-purple-200/70 bg-purple-800/50 rounded-xl p-4 backdrop-blur-sm">
-                <p className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-lg">💫</span>
-                  <span>Let the stars remind you of our connection</span>
-                </p>
-                <p className="flex items-center justify-center gap-2">
-                  <span className="text-lg">💖</span>
-                  <span>Feel the love that transcends distance</span>
-                </p>
+              <audio
+                ref={audioRef}
+                src="/audio/voice.mp3"
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => setIsPlaying(false)}
+                preload="auto"
+                style={{ display: 'none' }}
+              />
+
+              {/* Comfort Message */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentMessage}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-sm sm:text-base text-rose-700/90 bg-pink-100/70 rounded-xl p-4 backdrop-blur-sm border border-pink-200/50"
+                >
+                  <p className="flex items-center justify-center gap-2">
+                    <span className="text-lg">💝</span>
+                    <span>{comfortMessages[currentMessage]}</span>
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Love Notes */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                <div className="text-rose-600/80 bg-pink-50/60 rounded-lg p-3 backdrop-blur-sm border border-pink-200/30">
+                  <p className="flex items-center justify-center gap-2">
+                    <span className="text-lg">💌</span>
+                    <span>Every heartbeat calls your name</span>
+                  </p>
+                </div>
+                <div className="text-purple-600/80 bg-purple-50/60 rounded-lg p-3 backdrop-blur-sm border border-purple-200/30">
+                  <p className="flex items-center justify-center gap-2">
+                    <span className="text-lg">🌙</span>
+                    <span>I dream of you every night</span>
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Comfort Message */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mt-6 bg-purple-100 rounded-2xl p-4 sm:p-6 border-3 border-purple-200"
-            >
-              <p className="text-purple-700 font-medium italic text-sm sm:text-base">{currentMessage}</p>
-            </motion.div>
           </motion.div>
 
-          {/* Heart Animation */}
+          {/* Floating Love Particles */}
           <AnimatePresence>
-            {showHeartAnimation && (
+            {[...Array(5)].map((_, i) => (
               <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+                key={i}
+                className="absolute text-pink-400 text-2xl"
+                style={{
+                  left: `${20 + i * 15}%`,
+                  top: `${30 + i * 10}%`,
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: [0, 1, 0], y: [-20, -40, -60] }}
+                transition={{
+                  duration: 3,
+                  repeat: Number.POSITIVE_INFINITY,
+                  delay: i * 0.5,
+                }}
               >
-                <motion.div
-                  animate={{
-                    scale: [1, 2.5, 1.8, 2.2, 1.5],
-                    rotate: [0, 10, -10, 5, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    ease: "easeInOut",
-                  }}
-                  className="text-6xl sm:text-8xl"
-                >
-                  💖
-                </motion.div>
-
-                {/* Floating Hearts */}
-                {[...Array(16)].map((_, i) => (
-                  <motion.div
-                    key={`heart-${i}`}
-                    className="absolute text-pink-400 text-xl sm:text-2xl"
-                    style={{
-                      left: `${35 + Math.random() * 30}%`,
-                      top: `${35 + Math.random() * 30}%`,
-                    }}
-                    animate={{
-                      y: [0, -80, -160, -240],
-                      opacity: [0, 1, 0.8, 0],
-                      scale: [0.5, 1.2, 1, 0.5],
-                      rotate: [0, 180, 360, 540],
-                    }}
-                    transition={{
-                      duration: 3,
-                      delay: i * 0.15,
-                      ease: "easeOut",
-                    }}
-                  >
-                    💕
-                  </motion.div>
-                ))}
-
-                {/* Sparkle Effects */}
-                {[...Array(12)].map((_, i) => (
-                  <motion.div
-                    key={`sparkle-${i}`}
-                    className="absolute text-yellow-300 text-lg sm:text-xl"
-                    style={{
-                      left: `${30 + Math.random() * 40}%`,
-                      top: `${30 + Math.random() * 40}%`,
-                    }}
-                    animate={{
-                      scale: [0, 2, 0],
-                      rotate: [0, 180, 360],
-                      opacity: [0, 1, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      delay: i * 0.2,
-                    }}
-                  >
-                    ✨
-                  </motion.div>
-                ))}
+                ✨
               </motion.div>
-            )}
+            ))}
           </AnimatePresence>
         </div>
 

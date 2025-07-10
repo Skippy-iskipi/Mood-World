@@ -12,7 +12,7 @@ interface WorkRoomProps {
 const wineMessages = [
   "You showed so much grace today. Every smile you shared made someone's day brighter. 🌟",
   "Every table you touched felt your kindness. Your service is a gift to this world. ✨",
-  "The way you move through your work is poetry in motion. You are art. 💫",
+  "You're genuinely kind. It shows in how you treat everyone around you. 💫",
   "Your patience today was extraordinary. You handled everything with such elegance. 🌹",
   "You brought warmth to every interaction. That's not just work - that's magic. ✨",
   "The care you showed today didn't go unnoticed. You are deeply appreciated. 💖",
@@ -28,12 +28,12 @@ const selfCareItems = [
   },
   {
     item: "🦢",
-    message: "You're elegance in motion",
+    message: "There's something really refined about how you carry yourself.",
     description: "A note folded into a swan with loving words",
   },
   {
     item: "🔔",
-    message: "Time to rest, my love",
+    message: "Time to rest, Babe",
     description: "A tiny bell that chimes softly",
   },
   {
@@ -43,7 +43,7 @@ const selfCareItems = [
   },
   {
     item: "💌",
-    message: "You are cherished beyond measure",
+    message: "I hope you realize how much you're loved.",
     description: "A love letter sealed with care",
   },
 ]
