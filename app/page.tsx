@@ -8,6 +8,7 @@ import FloatingElements from "./components/floating-elements"
 import MusicToggle from "./components/music-toggle"
 import DailyMessage from "./components/daily-message"
 import EnhancedMusicSystem from "./components/enhanced-music-system"
+import BirthdayModal from "./components/birthday-modal"
 
 type Mood = {
   id: string
@@ -82,8 +83,16 @@ export default function SheikhaMoodWorld() {
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [showBirthdayModal, setShowBirthdayModal] = useState(false)
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => { 
+    setMounted(true)
+    // Check if user is already authenticated
+    const authenticated = localStorage.getItem("birthdayAuthenticated") === "true"
+    setIsAuthenticated(authenticated)
+    setShowBirthdayModal(!authenticated)
+  }, [])
 
   const handleMoodSelect = (mood: Mood) => {
     setSelectedMood(mood)
@@ -99,7 +108,22 @@ export default function SheikhaMoodWorld() {
     return selectedMood ? selectedMood.id : "selection"
   }
 
+  const handleBirthdaySuccess = () => {
+    setIsAuthenticated(true)
+    setShowBirthdayModal(false)
+  }
+
   if (!mounted) return null
+
+  // Show birthday modal if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <BirthdayModal 
+        isOpen={showBirthdayModal} 
+        onSuccess={handleBirthdaySuccess} 
+      />
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 relative overflow-hidden">
